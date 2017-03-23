@@ -49,7 +49,7 @@ angular.module('starter.services', [])
   };
 })
 
-.factory('Flights', function($http){
+.factory('Flights', ['$http', function($http){
 
   return {
     all: function() {
@@ -64,4 +64,4 @@ angular.module('starter.services', [])
       return;
     }
   };
-})
+}]);
