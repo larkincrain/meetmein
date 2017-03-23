@@ -49,15 +49,20 @@ angular.module('starter.services', [])
   };
 })
 
-.factory('Flights', ['$http', function($http){
+.factory('Flights', ['$http', 'API' function($http, API){
 
   return {
     all: function() {
       // get all the flights ????
+
+      var endpoint = 'public-flights/flights?';
+      var queryString = 'app_id=' + API.apiID + '&app_key=' + API.apiKey;
+
       return $http({
         method: 'GET',
-        url: '/someUrl'
+        url: API.url + endpoint + queryString;  
       });
+      
     },
     from: function(departureLocation, arrivalLocation, date) {
       //returns all the flights leaving from a specific location, to a given location, arriving on a certain date
