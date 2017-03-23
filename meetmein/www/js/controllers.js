@@ -3,6 +3,11 @@ angular.module('starter.controllers', [])
 .controller('DashCtrl', function($scope) {
   $scope.country = 'Amsterdam';
 
+  $scope.meetUpDate = new Date();
+  $scope.yourLocation = '';
+  $scope.friendLocation = '';
+
+  
 })
 
 .controller('ChatsCtrl', function($scope, Chats) {
