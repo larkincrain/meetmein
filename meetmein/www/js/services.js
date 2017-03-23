@@ -47,4 +47,19 @@ angular.module('starter.services', [])
       return null;
     }
   };
-});
+})
+
+.factory('Flights', function(){
+  return {
+    all: function() {
+      // get all the flights ????
+
+      return;
+    },
+    from: function(departureLocation, arrivalLocation, date) {
+      //returns all the flights leaving from a specific location, to a given location, arriving on a certain date
+      return;
+    }
+  };
+
+})
