@@ -49,17 +49,19 @@ angular.module('starter.services', [])
   };
 })
 
-.factory('Flights', function(){
+.factory('Flights', function($http){
+
   return {
     all: function() {
       // get all the flights ????
-
-      return;
+      return $http({
+        method: 'GET',
+        url: '/someUrl'
+      });
     },
     from: function(departureLocation, arrivalLocation, date) {
       //returns all the flights leaving from a specific location, to a given location, arriving on a certain date
       return;
     }
   };
-
 })
