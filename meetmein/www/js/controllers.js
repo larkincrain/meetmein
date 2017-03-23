@@ -1,13 +1,19 @@
 angular.module('starter.controllers', [])
 
-.controller('DashCtrl', function($scope) {
+.controller('DashCtrl', function($scope, Flights) {
   $scope.country = 'Amsterdam';
 
   $scope.meetUpDate = new Date();
   $scope.yourLocation = '';
   $scope.friendLocation = '';
 
-  
+  $scope.getAllFlights = function() {
+    Flights.all()
+      .then(function(data) {
+        console.log('got all the flights: ');
+        console.log(data);
+      });
+  }
 })
 
 .controller('ChatsCtrl', function($scope, Chats) {
