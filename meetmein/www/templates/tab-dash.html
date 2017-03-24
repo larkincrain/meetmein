@@ -3,6 +3,12 @@
     <h2>Meet Me In {{country}}</h2>
 
     <button class="btn btn-info" ng-click="getAllFlights();">Get all Flights!</button>
+
+    <div ng-repeat="flight in flights">
+      <span>{{flight.flightName}} - {{flight.scheduleDate}}</span>
+      <span>{{flight.terminal}}</span>
+      <span ng-repeat="destination in flight.route.destinations">{{destination}}</span>
+    </div>
     
   </ion-content>
 </ion-view>
