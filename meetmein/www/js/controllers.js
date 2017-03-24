@@ -11,13 +11,8 @@ angular.module('starter.controllers', [])
   };
   
   $scope.getAllFlights = function() {
-    alert('your location: ' + $scope.travelInfo.yourLocation);
-    alert('friend location: ' + $scope.travelInfo.friendLocation);
-
     Flights.all()
       .then(function(data) {
-        alert('got all the flight: ' + data.data.flights.length);
-
         $scope.travelInfo.flights = data.data.flights;
         $scope.travelInfo.flights.forEach(function (flight) {
           flight.route.destinations.forEach(function(destination) {
