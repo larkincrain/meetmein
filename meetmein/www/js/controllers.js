@@ -10,6 +10,8 @@ angular.module('starter.controllers', [])
   $scope.getAllFlights = function() {
     Flights.all()
       .then(function(data) {
+        alert('got all the flight: ' + data.data.flights.length);
+
         console.log('got all the flights: ');
         console.log(data);
       });
