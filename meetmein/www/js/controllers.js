@@ -1,20 +1,31 @@
 angular.module('starter.controllers', [])
 
 .controller('DashCtrl', function($scope, Flights) {
-  $scope.country = 'Amsterdam';
-
-  $scope.meetUpDate = new Date();
-  $scope.yourLocation = '';
-  $scope.friendLocation = '';
-
-  $scope.flights = [];
-
+  
+  $scope.travelInfo = {
+    country: 'Amsterdam',
+    yourLocation: '',
+    friendLocation: '',
+    flights: [],
+    eligibleFlights: []
+  };
+  
   $scope.getAllFlights = function() {
+    alert('your location: ' + $scope.travelInfo.yourLocation);
+    alert('friend location: ' + $scope.travelInfo.friendLocation);
+
     Flights.all()
       .then(function(data) {
         alert('got all the flight: ' + data.data.flights.length);
 
-        $scope.flights = data.data.flights;
+        $scope.travelInfo.flights = data.data.flights;
+        $scope.travelInfo.flights.forEach(function (flight) {
+          flight.route.destinations.forEach(function(destination) {
+            if (destination == $scope.travelInfo.yourLocation || destination == $scope.travelInfo.friendLocation) {
+              $scope.travelInfo.eligibleFlights[$scope.travelInfo.eligibleFlights.length] = flight;
+            }
+          });
+        });
       });
   }
 })

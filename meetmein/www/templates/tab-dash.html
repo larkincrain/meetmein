@@ -1,14 +1,24 @@
 <ion-view view-title="Dashboard">
   <ion-content class="padding">
-    <h2>Meet Me In {{country}}</h2>
+    <h2>Meet Me In {{travelInfo.country}}</h2>
 
+    <input ng-model="travelInfo.yourLocation" placeholder="your location">
+    <input ng-model="travelInfo.friendLocation" placeholder="friends's location">
     <button class="btn btn-info" ng-click="getAllFlights();">Get all Flights!</button>
 
-    <div ng-repeat="flight in flights">
+    <h2>Here's how you can meet in Amsterdam!</h2>
+    <div ng-repeat="flight in travelInfo.eligibleFlights">
       <span>{{flight.flightName}} - {{flight.scheduleDate}}</span>
       <span>{{flight.terminal}}</span>
       <span ng-repeat="destination in flight.route.destinations">{{destination}}</span>
     </div>
     
+    <h2>All the Flights</h2>
+    <div ng-repeat="flight in travelInfo.flights">
+      <span>{{flight.flightName}} - {{flight.scheduleDate}}</span>
+      <span>{{flight.terminal}}</span>
+      <span ng-repeat="destination in flight.route.destinations">{{destination}}</span>
+    </div>
+
   </ion-content>
 </ion-view>
