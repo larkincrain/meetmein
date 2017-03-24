@@ -49,20 +49,28 @@ angular.module('starter.services', [])
   };
 })
 
-.factory('Flights', ['$http', 'API' function($http, API){
+.factory('Flights', ['$http', 'API', function($http, API){
 
   return {
     all: function() {
       // get all the flights ????
 
-      var endpoint = 'public-flights/flights?';
+      var endpoint = 'public-flights/flights';
       var queryString = 'app_id=' + API.apiID + '&app_key=' + API.apiKey;
 
       return $http({
+        headers: {
+          'ResourceVersion': 'v3'
+        },
         method: 'GET',
-        url: API.url + endpoint + queryString;  
+        url: API.url + endpoint,
+        params: {
+          app_id: API.apiID,
+          app_key: API.apiKey
+        }
+        //url: "https://api.schiphol.nl/public-flights/flights?app_id=123c5986&app_key=783c7c4154bf520a36f111be058ceb10&includedelays=false&page=0&sort=%2Bscheduletime"
       });
-      
+
     },
     from: function(departureLocation, arrivalLocation, date) {
       //returns all the flights leaving from a specific location, to a given location, arriving on a certain date
