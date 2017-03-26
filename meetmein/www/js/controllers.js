@@ -9,7 +9,9 @@ angular.module('starter.controllers', ['ngLodash'])
     arrivalDate: '',
     flights: [],
     eligibleFlights: [],
-    destinations: []
+    destinations: [],
+    yourFilteredLocations: [],
+    friendFilteredLocations: []
   };
 
   var currentDate = new Date();
@@ -33,16 +35,11 @@ angular.module('starter.controllers', ['ngLodash'])
         });
 
       if (nextLinks.length > 0) {
-        alert('lets get some destinations');
-
         getNextPageDestionations(
           nextLinks.substring(nextLinks.indexOf('<') + 1, nextLinks.indexOf('>')),
           response.data.destinations
           )
             .then(function(data) {
-              //we should have all the data now
-              alert('got final data');
-              alert(data.length);
             });
       }        
     });
@@ -77,16 +74,11 @@ angular.module('starter.controllers', ['ngLodash'])
             nextLinks.substring(nextLinks.indexOf('<') + 1, nextLinks.indexOf('>')),
             lodash.concat(destinations, response.data.destinations)
             )
-              .then(function(data) {
-                //we should have all the data now
-                alert('I think were done')
-                alert(lodash.concat(destinations, response.data.destinations).length);
-                
+              .then(function(data) {                
                 deferred.resolve(lodash.concat(destinations, response.data.destinations));                
               });
         } else {
           //we're at the last of the pages
-          alert('got the last request');
           deferred.resolve(lodash.concat(destinations, response.data.destinations))
         }
       });
@@ -130,6 +122,18 @@ angular.module('starter.controllers', ['ngLodash'])
         //alert('got data');
         $scope.travelInfo.destinations = data.data.destinations;
         //alert('got: ' + $scope.destinations.length + ' destinations!');
+      });
+  }
+
+  $scope.autoCompleteYourLocation = function() {
+    //return the airports that meet the criteria
+    $scope.travelInfo.yourFilteredLocations = lodash.filter(
+      $scope.travelInfo.destinations,
+      function(destination) {
+        if(destination.publicName.english.indexOf($scope.travelInfo.yourLocation) > -1)
+          return true;
+        else 
+          return false;
       });
   }
 })

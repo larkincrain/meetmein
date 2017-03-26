@@ -1,30 +1,32 @@
-<ion-view view-title="Dashboard">
+<ion-view view-title="Dashboard" style="background: url(img/bicycle.jpg); background-size: 100% 100%;">
   <ion-content class="padding">
     <h2>Meet Me In {{travelInfo.country}}</h2>
 
-    <input ng-model="travelInfo.yourLocation" placeholder="your nearest airport code">
-    <input ng-model="travelInfo.friendLocation" placeholder="friends's airport code">
-    <button class="btn btn-info" ng-click="getAllFlights(); getAllDestinations();">Get all Flights!</button>
+    <div class="row">
+      <input ng-change="autoCompleteYourLocation()" ng-model="travelInfo.yourLocation" placeholder="your nearest airport code">
+    </div>
+    <div class="row">
+      <!-- The results of the autocomplete-->
+      <ul>
+        <li ng-repeat="destination in travelInfo.yourFilteredLocations">
+          <span>{{desintation.iata}} - {{destination.publicName.english}}</span>
+        </li>
+      </ul>
+    </div>
 
-    <h2>Here's how you can meet in Amsterdam!</h2>
+    <div class="row">
+      <input ng-model="travelInfo.friendLocation" placeholder="friends's airport code">
+    </div>
+
+    <div class="row">
+      <button class="btn btn-info" ng-click="getAllFlights();">Get all Flights!</button>
+    </div>
+
+    <h4>Here's how you can meet in Amsterdam!</h4>
     <div ng-repeat="flight in travelInfo.eligibleFlights">
       <span>{{flight.flightName}} - {{flight.scheduleDate}}</span>
       <span>{{flight.terminal}}</span>
       <span ng-repeat="destination in flight.route.destinations">{{destination}}</span>
     </div>
-    
-    <h2>All the Flights</h2>
-    <div ng-repeat="flight in travelInfo.flights">
-      <span>{{flight.flightName}} - {{flight.scheduleDate}}</span>
-      <span>{{flight.terminal}}</span>
-      <span ng-repeat="destination in flight.route.destinations">{{destination}}</span>
-    </div>
-
-    <h2> All the Destinations </h2>
-    <div ng-repeat="destination in travelInfo.destinations">
-      <span>{{destination.iata}} - {{destination.country}}</span>
-      <span>{{destination.country}}</span>
-    </div>
-
   </ion-content>
 </ion-view>
