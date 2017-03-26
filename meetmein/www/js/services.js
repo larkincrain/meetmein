@@ -149,7 +149,7 @@ angular.module('starter.services', [])
         method: 'GET',
         url: link
       });      
-    }
+    },
     one: function(name) {
 
     }

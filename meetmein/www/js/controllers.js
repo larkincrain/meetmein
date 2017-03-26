@@ -1,6 +1,6 @@
-angular.module('starter.controllers', [])
+angular.module('starter.controllers', ['ngLodash'])
 
-.controller('DashCtrl', function($scope, Flights, Destinations) {
+.controller('DashCtrl', function($scope, Flights, Destinations, lodash, $q, $timeout) {
   
   $scope.travelInfo = {
     country: 'Amsterdam',
@@ -14,6 +14,85 @@ angular.module('starter.controllers', [])
 
   var currentDate = new Date();
   $scope.travelInfo.arrivalDate = currentDate.getYear() + '-' + (currentDate.getMonth() + 1) + '-' + currentDate.getDate();
+
+  Destinations.firstPage()
+    .then(function(response){
+
+      var links = response.headers('Link');
+
+      if (links)
+        links = links.split(',');
+
+      var nextLinks = lodash.find(
+        links,
+        function(link) {
+          if (link.indexOf('next') > -1 )
+            return true;
+          else
+            return false;
+        });
+
+      if (nextLinks.length > 0) {
+        alert('lets get some destinations');
+
+        getNextPageDestionations(
+          nextLinks.substring(nextLinks.indexOf('<') + 1, nextLinks.indexOf('>')),
+          response.data.destinations
+          )
+            .then(function(data) {
+              //we should have all the data now
+              alert('got final data');
+              alert(data.length);
+            });
+      }        
+    });
+
+  function getNextPageDestionations(link, destinations) {
+    var deferred = $q.defer();
+
+    //alert('destinations');
+    //alert(destinations.length);
+    //alert('update pls');
+    $scope.travelInfo.destinations = destinations;
+    //alert($scope.travelInfo.destinations.length);
+                
+    Destinations.fromLink(link)
+      .then(function(response) {
+        var links = response.headers('Link');
+
+        if (links)
+          links = links.split(',');
+
+        var nextLinks = lodash.find(
+        links,
+        function(link) {
+          if (link.indexOf('next') > -1 )
+            return true;
+          else
+            return false;
+        });
+
+        if (nextLinks.length > 0) {
+          getNextPageDestionations(
+            nextLinks.substring(nextLinks.indexOf('<') + 1, nextLinks.indexOf('>')),
+            lodash.concat(destinations, response.data.destinations)
+            )
+              .then(function(data) {
+                //we should have all the data now
+                alert('I think were done')
+                alert(lodash.concat(destinations, response.data.destinations).length);
+                
+                deferred.resolve(lodash.concat(destinations, response.data.destinations));                
+              });
+        } else {
+          //we're at the last of the pages
+          alert('got the last request');
+          deferred.resolve(lodash.concat(destinations, response.data.destinations))
+        }
+      });
+
+      return deferred;
+  }
 
   $scope.getEligibleFlights = function() {
 
