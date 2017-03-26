@@ -72,9 +72,86 @@ angular.module('starter.services', [])
       });
 
     },
-    from: function(departureLocation, arrivalLocation, date) {
+    from: function(departureLocation, date) {
       //returns all the flights leaving from a specific location, to a given location, arriving on a certain date
+      var endpoint = 'public-flights/flights';
+      var queryString = 
+        'app_id=' + API.apiID + 
+        '&app_key=' + API.apiKey + 
+        '&route=' + departureLocation & 
+        '&scheduledate=' + date + 
+        '&flightdirection=' + 'A';
+
+      return $http({
+        headers: {
+          'ResourceVersion': 'v3'
+        },
+        method: 'GET',
+        url: API.url + endpoint,
+        params: {
+          app_id: API.apiID,
+          app_key: API.apiKey
+        }
+        //url: "https://api.schiphol.nl/public-flights/flights?app_id=123c5986&app_key=783c7c4154bf520a36f111be058ceb10&includedelays=false&page=0&sort=%2Bscheduletime"
+      });
+
       return;
+    }
+  };
+}])
+
+.factory('Destinations', ['$http', 'API', function($http, API){
+  return {
+    all: function() {
+      // get all the locations
+      //start with the original call, make a call until all locations have been gathered
+
+      var endpoint = 'public-flights/destinations';
+      var queryString = 'app_id=' + API.apiID + '&app_key=' + API.apiKey;
+
+      return $http({
+        headers: {
+          'ResourceVersion': 'v1'
+        },
+        method: 'GET',
+        url: API.url + endpoint,
+        params: {
+          app_id: API.apiID,
+          app_key: API.apiKey
+        }
+        //url: "https://api.schiphol.nl/public-flights/flights?app_id=123c5986&app_key=783c7c4154bf520a36f111be058ceb10&includedelays=false&page=0&sort=%2Bscheduletime"
+      });
+
+    },
+    firstPage: function() {
+      //get all the destinations on the first page
+      var endpoint = 'public-flights/destinations';
+      var queryString = 'app_id=' + API.apiID + '&app_key=' + API.apiKey;
+
+      return $http({
+        headers: {
+          'ResourceVersion': 'v1'
+        },
+        method: 'GET',
+        url: API.url + endpoint,
+        params: {
+          app_id: API.apiID,
+          app_key: API.apiKey
+        }
+      });
+    },
+    fromLink: function(link) {
+      // provided a link to a given page, will return the destinations on that page
+      return $http({
+        headers: {
+          'ResourceVersion': 'v1'
+        },
+        method: 'GET',
+        url: link
+      });      
+    }
+    one: function(name) {
+
     }
   };
 }]);
