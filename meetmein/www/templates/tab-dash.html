@@ -6,7 +6,13 @@
     <label class="item item-input">
       <span class="input-label">Location</span>
       <input ng-change="autoCompleteYourLocation()" ng-model="travelInfo.yourLocation" type="text">
+      <div style="background: #B0B0B0; padding: 6px;">
+        <span ng-repeat="destination in travelInfo.yourFilteredLocations">
+          {{desintation.iata}} - {{destination.publicName.english}}
+        </span>
+      </div>
     </label>
+
     <label class="item item-input">
       <span class="input-label">Friend's Location</span>
       <input ng-model="travelInfo.friendLocation" type="text">
@@ -14,15 +20,6 @@
 
     <button ion-button full outline ng-click="getAllFlights();">Get Flights!</button>
     
-    <div class="row">
-      <!-- The results of the autocomplete-->
-      <ul>
-        <li ng-repeat="destination in travelInfo.yourFilteredLocations">
-          <span>{{desintation.iata}} - {{destination.publicName.english}}</span>
-        </li>
-      </ul>
-    </div>
-
     <h4>Here's how you can meet in Amsterdam!</h4>
     <div ng-repeat="flight in travelInfo.eligibleFlights">
       <span>{{flight.flightName}} - {{flight.scheduleDate}}</span>
