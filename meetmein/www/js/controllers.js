@@ -149,10 +149,10 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
 
   $scope.autoCompleteYourLocation = function() {
     //return the airports that meet the criteria
-    if ($scope.travelInfo.yourLocation.length < 1) {
+    if ($scope.travelInfo.yourLocation.length <= 2) {
       $scope.travelInfo.yourFilteredLocations = [];
     }
-    else {
+    else if ($scope.travelInfo.yourLocation.length > 2){
       $scope.travelInfo.yourFilteredLocations = lodash.filter(
         $scope.travelInfo.destinations,
         function(destination) {
@@ -166,10 +166,10 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
 
   $scope.autoCompleteFriendLocation = function() {
     //return the airports that meet the criteria
-    if ($scope.travelInfo.friendLocation.length < 1) {
+    if ($scope.travelInfo.friendLocation.length <= 2) {
       $scope.travelInfo.friendFilteredLocations = [];
     }
-    else {
+    else if ($scope.travelInfo.friendLocation.length > 2) {
       $scope.travelInfo.friendFilteredLocations = lodash.filter(
         $scope.travelInfo.destinations,
         function(destination) {
