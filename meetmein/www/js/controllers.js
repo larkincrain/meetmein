@@ -27,6 +27,8 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
 
   if (!Storage.read('destinations')) {
     $scope.getDestinations();
+  } else {
+    $scope.travelInfo.destinations = Storage.read('destinations');
   }
 
   $scope.getDestinations = function() {
@@ -188,6 +190,17 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
         });
     }
   }
+
+  $scope.saveYourLocation = function(destination) {
+    $scope.travelInfo.yourFilteredLocations = destination;
+    $scope.travelInfo.yourLocation = destination.publicName.english;
+  }
+
+  $scope.saveFriendLocation = function(destination) {
+    $scope.travelInfo.friendFilteredLocations = destination;
+    $scope.travelInfo.friendLocation = destination.publicName.english; 
+  }
+
 })
 
 .controller('ChatsCtrl', function($scope, Chats) {
