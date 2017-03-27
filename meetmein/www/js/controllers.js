@@ -25,8 +25,11 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
   var currentDate = new Date();
   $scope.travelInfo.arrivalDate = currentDate.getYear() + '-' + (currentDate.getMonth() + 1) + '-' + currentDate.getDate();
 
-  alert(Storage.read('destinations'));
   if (!Storage.read('destinations')) {
+    $scope.getDestinations();
+  }
+
+  $scope.getDestinations = function() {
     Destinations.firstPage()
     .then(function(response){
 
