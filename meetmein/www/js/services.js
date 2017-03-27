@@ -166,7 +166,7 @@ angular.module('starter.services', [])
       }
 
       return true;
-    }.
+    },
     read: function(name) {
       return JSON.parse( window.localStorage.getItem( name ));
     }
