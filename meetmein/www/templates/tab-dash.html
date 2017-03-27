@@ -1,10 +1,21 @@
-<ion-view view-title="Dashboard" style="background: url(img/bicycle.jpg); background-size: 100% 100%;">
-  <ion-content class="padding">
+<ion-view view-title="Dashboard" style="background: url(img/canal_blue.jpg); background-size: 100% 100%;">
+  <ion-content>
     <h2>Meet Me In {{travelInfo.country}}</h2>
 
+    
+    <label class="item item-input">
+      <span class="input-label">Location</span>
+      <input ng-change="autoCompleteYourLocation()" ng-model="travelInfo.yourLocation" type="text">
+    </label>
+    <label class="item item-input">
+      <span class="input-label">Friend's Location</span>
+      <input ng-model="travelInfo.friendLocation" type="text">
+    </label>
+    <!--
     <div class="row">
       <input ng-change="autoCompleteYourLocation()" ng-model="travelInfo.yourLocation" placeholder="your nearest airport code">
     </div>
+    -->
     <div class="row">
       <!-- The results of the autocomplete-->
       <ul>
