@@ -25,7 +25,9 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
   var currentDate = new Date();
   $scope.travelInfo.arrivalDate = currentDate.getYear() + '-' + (currentDate.getMonth() + 1) + '-' + currentDate.getDate();
 
-  Destinations.firstPage()
+  alert(Storage.read('destinations'));
+  if (!Storage.read('destinations')) {
+    Destinations.firstPage()
     .then(function(response){
 
       var links = response.headers('Link');
@@ -64,6 +66,7 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
             });
       }        
     });
+  }
 
   function getNextPageDestionations(link, destinations) {
     var deferred = $q.defer();
@@ -72,6 +75,7 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
     //alert(destinations.length);
     //alert('update pls');
     $scope.travelInfo.destinations = destinations;
+    Storage.save('destinations', destinations);
     //alert($scope.travelInfo.destinations.length);
                 
     Destinations.fromLink(link)
@@ -101,7 +105,8 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
               });
         } else {
           //we're at the last of the pages
-          deferred.resolve(lodash.concat(destinations, response.data.destinations))
+          deferred.resolve(lodash.concat(destinations, response.data.destinations));
+
         }
       });
 
