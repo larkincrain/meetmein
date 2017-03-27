@@ -1,4 +1,4 @@
-angular.module('starter.controllers', ['ngLodash'])
+angular.module('starter.controllers', ['ngLodash', 'angular-svg-round-progressbar'])
 
 .controller('DashCtrl', function($scope, Flights, Destinations, lodash, $q, $timeout) {
   
