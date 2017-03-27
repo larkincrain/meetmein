@@ -8,11 +8,19 @@ angular.module('starter.controllers', ['ngLodash'])
     friendLocation: '',
     arrivalDate: '',
     flights: [],
-    eligibleFlights: [],
+    yourEligibleFlights: [],
+    friendEligibleFlights: [],
     destinations: [],
     yourFilteredLocations: [],
     friendFilteredLocations: []
   };
+
+  $scope.metaInfo = {
+    destinations: {
+      total: 0,
+      fetched: 0
+    }
+  }
 
   var currentDate = new Date();
   $scope.travelInfo.arrivalDate = currentDate.getYear() + '-' + (currentDate.getMonth() + 1) + '-' + currentDate.getDate();
@@ -25,6 +33,18 @@ angular.module('starter.controllers', ['ngLodash'])
       if (links)
         links = links.split(',');
 
+      var totalLinks = lodash.find(
+        links,
+        function(link) {
+          if(link.indexOf('last') > -1 ) 
+            return true;
+          else
+            return false;
+        });
+
+      //get the total number of pages
+      $scope.metaInfo.destinations.total = parseInt(totalLinks.substring(totalLinks.indexOf('&page=') + 6, totalLinks.indexOf('>;')))
+
       var nextLinks = lodash.find(
         links,
         function(link) {
@@ -35,6 +55,7 @@ angular.module('starter.controllers', ['ngLodash'])
         });
 
       if (nextLinks.length > 0) {
+        $scope.metaInfo.destinations.fetched ++;
         getNextPageDestionations(
           nextLinks.substring(nextLinks.indexOf('<') + 1, nextLinks.indexOf('>')),
           response.data.destinations
@@ -70,6 +91,7 @@ angular.module('starter.controllers', ['ngLodash'])
         });
 
         if (nextLinks.length > 0) {
+          $scope.metaInfo.destinations.fetched ++;
           getNextPageDestionations(
             nextLinks.substring(nextLinks.indexOf('<') + 1, nextLinks.indexOf('>')),
             lodash.concat(destinations, response.data.destinations)
@@ -127,14 +149,36 @@ angular.module('starter.controllers', ['ngLodash'])
 
   $scope.autoCompleteYourLocation = function() {
     //return the airports that meet the criteria
-    $scope.travelInfo.yourFilteredLocations = lodash.filter(
-      $scope.travelInfo.destinations,
-      function(destination) {
-        if(destination.publicName.english.indexOf($scope.travelInfo.yourLocation) > -1)
-          return true;
-        else 
-          return false;
-      });
+    if ($scope.travelInfo.yourLocation.length < 1) {
+      $scope.travelInfo.yourFilteredLocations = [];
+    }
+    else {
+      $scope.travelInfo.yourFilteredLocations = lodash.filter(
+        $scope.travelInfo.destinations,
+        function(destination) {
+          if(destination.publicName.english.indexOf($scope.travelInfo.yourLocation) > -1)
+            return true;
+          else 
+            return false;
+        });
+    }
+  }
+
+  $scope.autoCompleteFriendLocation = function() {
+    //return the airports that meet the criteria
+    if ($scope.travelInfo.friendLocation.length < 1) {
+      $scope.travelInfo.friendFilteredLocations = [];
+    }
+    else {
+      $scope.travelInfo.friendFilteredLocations = lodash.filter(
+        $scope.travelInfo.destinations,
+        function(destination) {
+          if(destination.publicName.english.indexOf($scope.travelInfo.friendLocation) > -1)
+            return true;
+          else 
+            return false;
+        });
+    }
   }
 })
 

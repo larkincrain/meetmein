@@ -2,29 +2,49 @@
   <ion-content>
     <h2>Meet Me In {{travelInfo.country}}</h2>
 
-    
+    <!-- Meta info -->
+    <div>
+      <span> {{metaInfo.destinations.fetched}} / {{ metaInfo.destinations.total}} </span>
+    </div>
+
+    <!-- Your Location -->
     <label class="item item-input">
       <span class="input-label">Location</span>
       <input ng-change="autoCompleteYourLocation()" ng-model="travelInfo.yourLocation" type="text">
-      <div style="background: #B0B0B0; padding: 6px;">
-        <span ng-repeat="destination in travelInfo.yourFilteredLocations">
+    </label>
+    <div style="background: #B0B0B0; padding: 6px;" ng-show="travelInfo.yourFilteredLocations.length > 0">
+      <span ng-repeat="destination in travelInfo.yourFilteredLocations">
+        <span>
           {{desintation.iata}} - {{destination.publicName.english}}
         </span>
-      </div>
-    </label>
+        <br/>
+      </span>
+    </div>
 
+    <!-- Your Friend's Location -->
     <label class="item item-input">
       <span class="input-label">Friend's Location</span>
-      <input ng-model="travelInfo.friendLocation" type="text">
+      <input ng-change="autoCompleteFriendLocation()" ng-model="travelInfo.friendLocation" type="text">
     </label>
+    <div style="background: #B0B0B0; padding: 6px;" ng-show="travelInfo.friendFilteredLocations.length > 0">
+      <span ng-repeat="destination in travelInfo.friendFilteredLocations">
+        <span>
+          {{desintation.iata}} - {{destination.publicName.english}}
+        </span>
+        <br/>
+      </span>
+    </div>
 
+    <!-- Go! -->
     <button ion-button full outline ng-click="getAllFlights();">Get Flights!</button>
-    
+
+    <!-- Results -->
     <h4>Here's how you can meet in Amsterdam!</h4>
     <div ng-repeat="flight in travelInfo.eligibleFlights">
       <span>{{flight.flightName}} - {{flight.scheduleDate}}</span>
       <span>{{flight.terminal}}</span>
       <span ng-repeat="destination in flight.route.destinations">{{destination}}</span>
     </div>
+
   </ion-content>
 </ion-view>
