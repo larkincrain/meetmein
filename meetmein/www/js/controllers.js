@@ -1,6 +1,6 @@
 angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar'])
 
-.controller('DashCtrl', function($scope, Flights, Destinations, lodash, $q, $timeout) {
+.controller('DashCtrl', function($scope, Flights, Destinations, lodash, $q, $timeout, Storage) {
   
   $scope.travelInfo = {
     country: 'Amsterdam',

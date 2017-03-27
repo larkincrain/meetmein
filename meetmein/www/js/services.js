@@ -154,4 +154,21 @@ angular.module('starter.services', [])
 
     }
   };
+}])
+
+.factory('Storage', ['$http', 'API', function(){
+  return {
+    save: function(name, item) {
+      try{
+        window.localStorage.setItem(name, JSON.stringify(item));
+      } catch (ex) {
+        return ex;
+      }
+
+      return true;
+    }.
+    read: function(name) {
+      return JSON.parse( window.localStorage.getItem( name ));
+    }
+  };
 }]);
