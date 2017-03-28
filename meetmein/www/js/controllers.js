@@ -156,47 +156,57 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
   $scope.getYourFlights = function() {
     Flights.firstPage($scope.travelInfo.yourFilteredLocations.iata, $scope.travelInfo.arrivalDate)
     .then(function(response){
-
       var links = response.headers('Link');
 
       if (links)
         links = links.split(',');
 
-      var totalLinks = lodash.find(
-        links,
-        function(link) {
-          if(link.indexOf('last') > -1 ) 
-            return true;
-          else
-            return false;
-        });
+      alert('just split link');
 
-      //get the total number of pages
-      $scope.metaInfo.flights.total = parseInt(totalLinks.substring(totalLinks.indexOf('&page=') + 6, totalLinks.indexOf('>;')))
+      if (links) {
+        alert('links is not null');
+        var totalLinks = lodash.find(
+          links,
+          function(link) {
+            if(link.indexOf('last') > -1 ) 
+              return true;
+            else
+              return false;
+          });
 
-      var nextLinks = lodash.find(
-        links,
-        function(link) {
-          if (link.indexOf('next') > -1 )
-            return true;
-          else
-            return false;
-        });
+        //get the total number of pages
+        $scope.metaInfo.flights.your.total = (parseInt(totalLinks.substring(totalLinks.indexOf('&page=') + 6, totalLinks.indexOf('>;'))) || 0)
 
-      if (nextLinks.length > 0) {
-        $scope.metaInfo.flights.fetched ++;
-        getNextPageYourFlights(
-          nextLinks.substring(nextLinks.indexOf('<') + 1, nextLinks.indexOf('>')),
-          response.data.flights
-          )
-            .then(function(data) {
+        var nextLinks = lodash.find(
+          links,
+          function(link) {
+            if (link.indexOf('next') > -1 )
+              return true;
+            else
+              return false;
+          });
 
-            });
-      }        
+        if (nextLinks.length > 0) {
+          $scope.metaInfo.flights.your.fetched ++;
+          getNextPageYourFlights(
+            nextLinks.substring(nextLinks.indexOf('<') + 1, nextLinks.indexOf('>')),
+            response.data.flights
+            )
+              .then(function(data) {
+
+              });
+        }        
+      } else {
+        alert('done');
+        $scope.travelInfo.yourEligibleFlights = response.data.flights;
+      }
+
     });
   }
 
   $scope.getFriendFlights = function() {
+    alert('getting friend flights!');
+
    Flights.firstPage($scope.travelInfo.friendFilteredLocations.iata, $scope.travelInfo.arrivalDate)
     .then(function(response){
 

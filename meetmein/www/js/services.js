@@ -100,20 +100,27 @@ angular.module('starter.services', [])
 
     firstPage: function(departureLocation, date) {
       //get all the destinations on the first page
+
+      var formattedDate = 
+        date.getFullYear() + '-' +
+        (date.getMonth() + 1) + '-' +
+        date.getDate();
+
+
       var endpoint = 'public-flights/flights';
       var queryString = 
-        'app_id=' + API.apiID + 
+        '?app_id=' + API.apiID + 
         '&app_key=' + API.apiKey + 
-        '&route=' + departureLocation & 
-        '&scheduledate=' + date + 
+        '&route=' + departureLocation + 
+        '&scheduledate=' + formattedDate + 
         '&flightdirection=' + 'A';
 
       return $http({
         headers: {
-          'ResourceVersion': 'v1'
+          'ResourceVersion': 'v3'
         },
         method: 'GET',
-        url: API.url + endpoint,
+        url: API.url + endpoint + queryString,
         params: {
           app_id: API.apiID,
           app_key: API.apiKey
@@ -125,7 +132,7 @@ angular.module('starter.services', [])
       // provided a link to a given page, will return the flights on that page
       return $http({
         headers: {
-          'ResourceVersion': 'v1'
+          'ResourceVersion': 'v3'
         },
         method: 'GET',
         url: link
