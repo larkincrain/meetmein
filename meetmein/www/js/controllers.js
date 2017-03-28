@@ -124,6 +124,11 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
 
   $scope.getEligibleFlights = function() {
 
+    $scope.getYourFlights()
+      .then(function(data) {
+
+      });
+
     //get your flights
     Flights.from($scope.travelInfo.yourLocation, $scope.travelInfo.arrivalDate)
       .then(function(data) {
@@ -138,8 +143,8 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
       });
   }
 
-  $scope.getFlights = function() {
-    Flights.firstPage()
+  $scope.getYourFlights = function() {
+    Flights.firstPage($scope.travelInfo.yourFilteredLocations.iata, $scope.travelInfo.arrivalDate)
     .then(function(response){
 
       var links = response.headers('Link');
@@ -175,6 +180,7 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
           response.data.flights
           )
             .then(function(data) {
+              
             });
       }        
     });
