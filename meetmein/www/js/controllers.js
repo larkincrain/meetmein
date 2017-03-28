@@ -134,25 +134,9 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
       .then(function(data) {
       });
 
-    alert('lets get friend flight');
     $scope.getFriendFlights()
       .then(function(data){
       });
-
-    //get your flights
-    /*
-    Flights.from($scope.travelInfo.yourLocation, $scope.travelInfo.arrivalDate)
-      .then(function(data) {
-        $scope.travelInfo.flights = data.data.flights;
-        $scope.travelInfo.flights.forEach(function (flight) {
-          flight.route.destinations.forEach(function(destination) {
-            if (destination == $scope.travelInfo.yourLocation || destination == $scope.travelInfo.friendLocation) {
-              $scope.travelInfo.eligibleFlights[$scope.travelInfo.eligibleFlights.length] = flight;
-            }
-          });
-        });
-      });
-    */
   }
 
   $scope.getYourFlights = function() {
