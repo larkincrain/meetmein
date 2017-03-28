@@ -60,47 +60,6 @@
     <!-- Go! -->
     <button ion-button full outline ng-click="getEligibleFlights();">Get Flights!</button>
 
-    <!-- Meta info -->
-    <div class="row">
-      <div class="row text-center">
-        <round-progress
-          max="metaInfo.flights.your.total"
-          current="metaInfo.flights.your.fetched"
-          color="#45ccce"
-          bgcolor="#eaeaea"
-          radius="15"
-          stroke="2"
-          semi="false"
-          rounded="true"
-          clockwise="false"
-          responsive="false"
-          duration="800"
-          animation="easeInOutQuart"
-          animation-delay="0">    
-        </round-progress>
-        <span> {{metaInfo.flights.your.fetched}} / {{ metaInfo.flights.your.total}} </span>
-      </div>
-
-      <div class="row text-center">
-        <round-progress
-          max="metaInfo.flights.friend.total"
-          current="metaInfo.flights.friend.fetched"
-          color="#45ccce"
-          bgcolor="#eaeaea"
-          radius="15"
-          stroke="2"
-          semi="false"
-          rounded="true"
-          clockwise="false"
-          responsive="false"
-          duration="800"
-          animation="easeInOutQuart"
-          animation-delay="0">    
-        </round-progress>
-        <span> {{metaInfo.flights.friend.fetched}} / {{ metaInfo.flights.friend.total}} </span>
-      </div>
-    </div>
-
     <!-- Results -->
     <div class="row">
       <h4 style="color: white;">Here's how you can meet in Amsterdam!</h4>
