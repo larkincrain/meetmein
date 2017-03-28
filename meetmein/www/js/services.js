@@ -70,8 +70,8 @@ angular.module('starter.services', [])
         }
         //url: "https://api.schiphol.nl/public-flights/flights?app_id=123c5986&app_key=783c7c4154bf520a36f111be058ceb10&includedelays=false&page=0&sort=%2Bscheduletime"
       });
-
     },
+
     from: function(departureLocation, date) {
       //returns all the flights leaving from a specific location, to a given location, arriving on a certain date
       var endpoint = 'public-flights/flights';
@@ -96,7 +96,41 @@ angular.module('starter.services', [])
       });
 
       return;
-    }
+    },
+
+    firstPage: function(departureLocation, date) {
+      //get all the destinations on the first page
+      var endpoint = 'public-flights/flights';
+      var queryString = 
+        'app_id=' + API.apiID + 
+        '&app_key=' + API.apiKey + 
+        '&route=' + departureLocation & 
+        '&scheduledate=' + date + 
+        '&flightdirection=' + 'A';
+
+      return $http({
+        headers: {
+          'ResourceVersion': 'v1'
+        },
+        method: 'GET',
+        url: API.url + endpoint,
+        params: {
+          app_id: API.apiID,
+          app_key: API.apiKey
+        }
+      });
+    },
+
+    fromLink: function(link) {
+      // provided a link to a given page, will return the flights on that page
+      return $http({
+        headers: {
+          'ResourceVersion': 'v1'
+        },
+        method: 'GET',
+        url: link
+      });      
+    }    
   };
 }])
 
@@ -121,8 +155,8 @@ angular.module('starter.services', [])
         }
         //url: "https://api.schiphol.nl/public-flights/flights?app_id=123c5986&app_key=783c7c4154bf520a36f111be058ceb10&includedelays=false&page=0&sort=%2Bscheduletime"
       });
-
     },
+
     firstPage: function() {
       //get all the destinations on the first page
       var endpoint = 'public-flights/destinations';
@@ -140,6 +174,7 @@ angular.module('starter.services', [])
         }
       });
     },
+
     fromLink: function(link) {
       // provided a link to a given page, will return the destinations on that page
       return $http({
@@ -150,8 +185,8 @@ angular.module('starter.services', [])
         url: link
       });      
     },
-    one: function(name) {
 
+    one: function(name) {
     }
   };
 }])
