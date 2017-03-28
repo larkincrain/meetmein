@@ -21,8 +21,14 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
       fetched: 0
     },
     flights: {
-      total: 0,
-      fetched: 0
+      your: {
+        total: 0,
+        fetched: 0
+      },
+      friend: {
+        total: 0,
+        fetched: 0        
+      }
     }
   }
 
@@ -126,10 +132,13 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
 
     $scope.getYourFlights()
       .then(function(data) {
-
+      });
+    $scope.getFriendFlights()
+      .then(function(data){
       });
 
     //get your flights
+    /*
     Flights.from($scope.travelInfo.yourLocation, $scope.travelInfo.arrivalDate)
       .then(function(data) {
         $scope.travelInfo.flights = data.data.flights;
@@ -141,6 +150,7 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
           });
         });
       });
+    */
   }
 
   $scope.getYourFlights = function() {
@@ -175,24 +185,112 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
 
       if (nextLinks.length > 0) {
         $scope.metaInfo.flights.fetched ++;
-        getNextPageFlights(
+        getNextPageYourFlights(
           nextLinks.substring(nextLinks.indexOf('<') + 1, nextLinks.indexOf('>')),
           response.data.flights
           )
             .then(function(data) {
-              
+
             });
       }        
     });
   }
 
-  function getNextPageFlights(link, flights) {
+  $scope.getFriendFlights = function() {
+   Flights.firstPage($scope.travelInfo.friendFilteredLocations.iata, $scope.travelInfo.arrivalDate)
+    .then(function(response){
+
+      var links = response.headers('Link');
+
+      if (links)
+        links = links.split(',');
+
+      var totalLinks = lodash.find(
+        links,
+        function(link) {
+          if(link.indexOf('last') > -1 ) 
+            return true;
+          else
+            return false;
+        });
+
+      //get the total number of pages
+      $scope.metaInfo.flights.total = parseInt(totalLinks.substring(totalLinks.indexOf('&page=') + 6, totalLinks.indexOf('>;')))
+
+      var nextLinks = lodash.find(
+        links,
+        function(link) {
+          if (link.indexOf('next') > -1 )
+            return true;
+          else
+            return false;
+        });
+
+      if (nextLinks.length > 0) {
+        $scope.metaInfo.flights.fetched ++;
+        getNextPageFriendFlights(
+          nextLinks.substring(nextLinks.indexOf('<') + 1, nextLinks.indexOf('>')),
+          response.data.flights
+          )
+            .then(function(data) {
+
+            });
+      }        
+    }); 
+  }
+
+  function getNextPageYourFlights(link, flights) {
     var deferred = $q.defer();
 
     //alert('destinations');
     //alert(destinations.length);
     //alert('update pls');
-    $scope.travelInfo.flights = flights;
+    $scope.travelInfo.yourEligibleFlights = flights;
+    Storage.save('yourFlights', flights);
+    //alert($scope.travelInfo.destinations.length);
+                
+    Destinations.fromLink(link)
+      .then(function(response) {
+        var links = response.headers('Link');
+
+        if (links)
+          links = links.split(',');
+
+        var nextLinks = lodash.find(
+        links,
+        function(link) {
+          if (link.indexOf('next') > -1 )
+            return true;
+          else
+            return false;
+        });
+
+        if (nextLinks.length > 0) {
+          $scope.metaInfo.flights.your.fetched ++;
+          getNextPageYourFlights(
+            nextLinks.substring(nextLinks.indexOf('<') + 1, nextLinks.indexOf('>')),
+            lodash.concat(flights, response.data.flights)
+            )
+              .then(function(data) {                
+                deferred.resolve(lodash.concat(flights, response.data.flights));                
+              });
+        } else {
+          //we're at the last of the pages
+          deferred.resolve(lodash.concat(flights, response.data.flights));
+
+        }
+      });
+
+    return deferred;
+  }
+
+  function getNextPageFriendFlights(link, flights) {
+    var deferred = $q.defer();
+
+    //alert('destinations');
+    //alert(destinations.length);
+    //alert('update pls');
+    $scope.travelInfo.friendFlights = flights;
     Storage.save('flights', flights);
     //alert($scope.travelInfo.destinations.length);
                 
@@ -213,8 +311,8 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
         });
 
         if (nextLinks.length > 0) {
-          $scope.metaInfo.flights.fetched ++;
-          getNextPageFlights(
+          $scope.metaInfo.flights.friend.fetched ++;
+          getNextPageFriendFlights(
             nextLinks.substring(nextLinks.indexOf('<') + 1, nextLinks.indexOf('>')),
             lodash.concat(flights, response.data.flights)
             )
