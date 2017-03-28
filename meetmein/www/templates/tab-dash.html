@@ -109,17 +109,16 @@
       <div>
         <span>Your Flights</span>
         <div ng-repeat="flight in travelInfo.yourEligibleFlights">
-          <span>{{flight.flightName}}</span>
-          <span>{{flight.scheduleDate}}</span>
-          <span ng-repeat="destination in flight.route.destinations">{{destination}}</span>
+          <span class="row">{{flight.prefixICAO}} - {{flight.flightNumber}}</span>
+          <span class="row">{{flight.scheduleTime}}</span>
         </div>
       </div>
+      <div> </div>
       <div>
         <span>Friend Flights</span>
         <div ng-repeat="flight in travelInfo.friendEligibleFlights">
-          <span>{{flight.flightName}}</span>
-          <span>{{flight.scheduleDate}}</span>
-          <span ng-repeat="destination in flight.route.destinations">{{destination}}</span>
+          <span class="row">{{flight.prefixICAO}} - {{flight.flightNumber}}</span>
+          <span class="row">{{flight.scheduleTime}}</span>
         </div>
       </div>
     </div>
