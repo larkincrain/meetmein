@@ -133,6 +133,8 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
     $scope.getYourFlights()
       .then(function(data) {
       });
+
+    alert('lets get friend flight');
     $scope.getFriendFlights()
       .then(function(data){
       });
@@ -154,6 +156,8 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
   }
 
   $scope.getYourFlights = function() {
+    var deferred = $q.defer();
+
     Flights.firstPage($scope.travelInfo.yourFilteredLocations.iata, $scope.travelInfo.arrivalDate)
     .then(function(response){
       var links = response.headers('Link');
@@ -161,10 +165,7 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
       if (links)
         links = links.split(',');
 
-      alert('just split link');
-
       if (links) {
-        alert('links is not null');
         var totalLinks = lodash.find(
           links,
           function(link) {
@@ -193,60 +194,69 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
             response.data.flights
             )
               .then(function(data) {
-
+                deferred.resolve(data);
               });
         }        
       } else {
-        alert('done');
         $scope.travelInfo.yourEligibleFlights = response.data.flights;
+        deferred.resolve(response.data.flights);
       }
 
     });
+
+    return deferred.promise;
   }
 
   $scope.getFriendFlights = function() {
-    alert('getting friend flights!');
+    var deferred = $q.defer();
 
-   Flights.firstPage($scope.travelInfo.friendFilteredLocations.iata, $scope.travelInfo.arrivalDate)
+    Flights.firstPage($scope.travelInfo.friendFilteredLocations.iata, $scope.travelInfo.arrivalDate)
     .then(function(response){
-
       var links = response.headers('Link');
 
       if (links)
         links = links.split(',');
 
-      var totalLinks = lodash.find(
-        links,
-        function(link) {
-          if(link.indexOf('last') > -1 ) 
-            return true;
-          else
-            return false;
-        });
+      if (links) {
+        var totalLinks = lodash.find(
+          links,
+          function(link) {
+            if(link.indexOf('last') > -1 ) 
+              return true;
+            else
+              return false;
+          });
 
-      //get the total number of pages
-      $scope.metaInfo.flights.total = parseInt(totalLinks.substring(totalLinks.indexOf('&page=') + 6, totalLinks.indexOf('>;')))
+        //get the total number of pages
+        $scope.metaInfo.flights.friend.total = (parseInt(totalLinks.substring(totalLinks.indexOf('&page=') + 6, totalLinks.indexOf('>;'))) || 0)
 
-      var nextLinks = lodash.find(
-        links,
-        function(link) {
-          if (link.indexOf('next') > -1 )
-            return true;
-          else
-            return false;
-        });
+        var nextLinks = lodash.find(
+          links,
+          function(link) {
+            if (link.indexOf('next') > -1 )
+              return true;
+            else
+              return false;
+          });
 
-      if (nextLinks.length > 0) {
-        $scope.metaInfo.flights.fetched ++;
-        getNextPageFriendFlights(
-          nextLinks.substring(nextLinks.indexOf('<') + 1, nextLinks.indexOf('>')),
-          response.data.flights
-          )
-            .then(function(data) {
+        if (nextLinks.length > 0) {
+          $scope.metaInfo.flights.friend.fetched ++;
+          getNextPageFriendFlights(
+            nextLinks.substring(nextLinks.indexOf('<') + 1, nextLinks.indexOf('>')),
+            response.data.flights
+            )
+              .then(function(data) {
+                deferred.resolve(data);
+              });
+        }        
+      } else {
+        $scope.travelInfo.friendEligibleFlights = response.data.flights;
+        deferred.resolve(response.data.flights);
+      }
 
-            });
-      }        
-    }); 
+    });
+
+    return deferred.promise;
   }
 
   function getNextPageYourFlights(link, flights) {
@@ -300,8 +310,8 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
     //alert('destinations');
     //alert(destinations.length);
     //alert('update pls');
-    $scope.travelInfo.friendFlights = flights;
-    Storage.save('flights', flights);
+    $scope.travelInfo.friendEligibleFlights = flights;
+    Storage.save('friendFlights', flights);
     //alert($scope.travelInfo.destinations.length);
                 
     Destinations.fromLink(link)
