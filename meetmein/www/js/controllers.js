@@ -30,7 +30,7 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
         fetched: 0        
       }
     }
-  }
+  };
 
   var currentDate = new Date();
   $scope.travelInfo.arrivalDate = currentDate.getYear() + '-' + (currentDate.getMonth() + 1) + '-' + currentDate.getDate();
@@ -130,13 +130,20 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
 
   $scope.getEligibleFlights = function() {
 
-    $scope.getYourFlights()
-      .then(function(data) {
+    var yourPromise = $scope.getYourFlights();
+    var friendPromise = $scope.getFriendFlights();
+      
+
+    $q.all([yourPromise, friendPromise])
+      .then(function(data){
+        //we have all the flights for you and the friend
+
       });
 
-    $scope.getFriendFlights()
-      .then(function(data){
-      });
+  }
+
+  $scope.findBestMatch = function() {
+    
   }
 
   $scope.getYourFlights = function() {
@@ -178,6 +185,7 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
             response.data.flights
             )
               .then(function(data) {
+                $scope.travelInfo.yourEligibleFlights = response.data.flights;
                 deferred.resolve(data);
               });
         }        
@@ -185,7 +193,6 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
         $scope.travelInfo.yourEligibleFlights = response.data.flights;
         deferred.resolve(response.data.flights);
       }
-
     });
 
     return deferred.promise;
@@ -196,6 +203,7 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
 
     Flights.firstPage($scope.travelInfo.friendFilteredLocations.iata, $scope.travelInfo.arrivalDate)
     .then(function(response){
+
       var links = response.headers('Link');
 
       if (links)
@@ -230,6 +238,7 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
             response.data.flights
             )
               .then(function(data) {
+                $scope.travelInfo.friendEligibleFlights = response.data.flights;
                 deferred.resolve(data);
               });
         }        
@@ -260,6 +269,7 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
         if (links)
           links = links.split(',');
 
+        if (links) {
         var nextLinks = lodash.find(
         links,
         function(link) {
@@ -283,6 +293,9 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
           deferred.resolve(lodash.concat(flights, response.data.flights));
 
         }
+      } else {
+        deferred.resolve(lodash.concat(flights, response.data.flights));        
+      }
       });
 
     return deferred;
@@ -305,6 +318,7 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
         if (links)
           links = links.split(',');
 
+        if (links) {
         var nextLinks = lodash.find(
         links,
         function(link) {
@@ -321,13 +335,17 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
             lodash.concat(flights, response.data.flights)
             )
               .then(function(data) {                
-                deferred.resolve(lodash.concat(flights, response.data.flights));                
+                deferred.resolve();                
               });
         } else {
           //we're at the last of the pages
-          deferred.resolve(lodash.concat(flights, response.data.flights));
-
+          deferred.resolve();
         }
+      } else {
+        //we're at the last of the pages
+        deferred.resolve();
+      }
+
       });
 
     return deferred;

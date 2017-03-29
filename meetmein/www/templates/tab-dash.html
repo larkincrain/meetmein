@@ -61,12 +61,12 @@
     <button ion-button full outline ng-click="getEligibleFlights();">Get Flights!</button>
 
     <!-- Results -->
-    <div class="row">
+    <div class="row" ng-show="(travelInfo.yourEligibleFlights.length > 0) && travelInfo.friendEligibleFlights.length > 0">
       <h4 style="color: white;">Here's how you can meet in Amsterdam!</h4>
     </div>
     <!-- Your Results-->
-    <div class="row" style="background:rgba(255,255,255,0.5);">
-      <div style="width: 50%;" ng-show="travelInfo.yourEligibleFlights.length > 0">
+    <div class="row" style="background:rgba(255,255,255,0.5);" ng-show="travelInfo.yourEligibleFlights.length > 0">
+      <div style="width: 50%;">
         <span>Your Flights</span>
         <div ng-repeat="flight in travelInfo.yourEligibleFlights">
           <span class="row">{{flight.prefixICAO}} - {{flight.flightNumber}}</span>
