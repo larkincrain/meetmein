@@ -64,16 +64,18 @@
     <div class="row">
       <h4 style="color: white;">Here's how you can meet in Amsterdam!</h4>
     </div>
-    <div class="row">
-      <div>
+    <!-- Your Results-->
+    <div class="row" style="background:rgba(255,255,255,0.5);">
+      <div style="width: 50%;" ng-show="travelInfo.yourEligibleFlights.length > 0">
         <span>Your Flights</span>
         <div ng-repeat="flight in travelInfo.yourEligibleFlights">
           <span class="row">{{flight.prefixICAO}} - {{flight.flightNumber}}</span>
           <span class="row">{{flight.scheduleTime}}</span>
         </div>
       </div>
-      <div> </div>
-      <div>
+
+      <!-- Friend Results-->
+      <div style="width: 50%;" ng-show="travelInfo.friendEligibleFlights.length > 0">
         <span>Friend Flights</span>
         <div ng-repeat="flight in travelInfo.friendEligibleFlights">
           <span class="row">{{flight.prefixICAO}} - {{flight.flightNumber}}</span>
