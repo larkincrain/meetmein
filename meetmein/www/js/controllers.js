@@ -35,12 +35,6 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
   var currentDate = new Date();
   $scope.travelInfo.arrivalDate = currentDate.getYear() + '-' + (currentDate.getMonth() + 1) + '-' + currentDate.getDate();
 
-  if (!Storage.read('destinations')) {
-    $scope.getDestinations();
-  } else {
-    $scope.travelInfo.destinations = Storage.read('destinations');
-  }
-
   $scope.getDestinations = function() {
     Destinations.firstPage()
     .then(function(response){
@@ -134,16 +128,23 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
     var friendPromise = $scope.getFriendFlights();
       
 
-    $q.all([yourPromise, friendPromise])
+    $q.all([
+      $scope.getYourFlights(),
+      $scope.getFriendFlights()])
       .then(function(data){
+        //alert('done!');
+        alert(data[0]);
         //we have all the flights for you and the friend
-
+        
+        $scope.findBestMatch();
       });
-
   }
 
   $scope.findBestMatch = function() {
-    
+    //find which pair of flights yields the shortest wait time
+
+    alert('matching the best flights together');
+    //$scope.yourEligibleFlights.map(function())
   }
 
   $scope.getYourFlights = function() {
@@ -186,11 +187,13 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
             )
               .then(function(data) {
                 $scope.travelInfo.yourEligibleFlights = response.data.flights;
+                //alert('your flight - resolving!');
                 deferred.resolve(data);
               });
         }        
       } else {
         $scope.travelInfo.yourEligibleFlights = response.data.flights;
+        //alert('your flight - resolving!');
         deferred.resolve(response.data.flights);
       }
     });
@@ -238,11 +241,13 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
             response.data.flights
             )
               .then(function(data) {
+                //alert('friend flight - resolving!');
                 $scope.travelInfo.friendEligibleFlights = response.data.flights;
                 deferred.resolve(data);
               });
         }        
       } else {
+        //alert('friend flight - resolving!');
         $scope.travelInfo.friendEligibleFlights = response.data.flights;
         deferred.resolve(response.data.flights);
       }
@@ -388,6 +393,20 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
           else 
             return false;
         });
+
+      // add in destinations that match the iata code
+      if ($scope.travelInfo.yourLocation.length == 3) {
+        $scope.travelInfo.yourFilteredLocations = $scope.travelInfo.yourFilteredLocations.concat(
+          lodash.filter(
+            $scope.travelInfo.destinations,
+            function(destination) {
+              if(destination.iata.indexOf($scope.travelInfo.yourLocation) > -1)
+                return true;
+              else 
+                return false;
+            })
+          );        
+      }
     }
   }
 
@@ -397,14 +416,28 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
       $scope.travelInfo.friendFilteredLocations = [];
     }
     else if ($scope.travelInfo.friendLocation.length > 2) {
-      $scope.travelInfo.friendFilteredLocations = lodash.filter(
-        $scope.travelInfo.destinations,
-        function(destination) {
-          if(destination.publicName.english.indexOf($scope.travelInfo.friendLocation) > -1)
-            return true;
-          else 
-            return false;
-        });
+      $scope.travelInfo.friendFilteredLocations = $scope.travelInfo.friendFilteredLocations.concat(
+        lodash.filter(
+          $scope.travelInfo.destinations,
+          function(destination) {
+            if(destination.publicName.english.indexOf($scope.travelInfo.friendLocation) > -1)
+              return true;
+            else 
+              return false;
+          })
+        );
+
+      // add in destinations that match the iata code
+      if ($scope.travelInfo.friendLocation.length == 3) {
+        $scope.travelInfo.friendFilteredLocations += lodash.filter(
+          $scope.travelInfo.destinations,
+          function(destination) {
+            if(destination.iata.indexOf($scope.travelInfo.friendLocation) > -1)
+              return true;
+            else 
+              return false;
+          });        
+      }
     }
   }
 
@@ -416,6 +449,12 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
   $scope.saveFriendLocation = function(destination) {
     $scope.travelInfo.friendFilteredLocations = destination;
     $scope.travelInfo.friendLocation = destination.publicName.english; 
+  }
+
+  if (!Storage.read('destinations')) {
+    $scope.getDestinations();
+  } else {
+    $scope.travelInfo.destinations = Storage.read('destinations');
   }
 
 })
