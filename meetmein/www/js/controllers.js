@@ -124,9 +124,7 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
 
   $scope.getEligibleFlights = function() {
 
-    var yourPromise = $scope.getYourFlights();
-    var friendPromise = $scope.getFriendFlights();
-      
+    alert('get flights');
 
     $q.all([
       $scope.getYourFlights(),
