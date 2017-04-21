@@ -130,8 +130,8 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
       $scope.getYourFlights(),
       $scope.getFriendFlights()])
       .then(function(data){
-        //alert('done!');
-        alert(data[0]);
+        alert('done!');
+        
         //we have all the flights for you and the friend
         
         $scope.findBestMatch();
@@ -184,6 +184,7 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
             response.data.flights
             )
               .then(function(data) {
+                alert('got second page of your flights');
                 $scope.travelInfo.yourEligibleFlights = response.data.flights;
                 //alert('your flight - resolving!');
                 deferred.resolve(data);
@@ -288,15 +289,18 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
             nextLinks.substring(nextLinks.indexOf('<') + 1, nextLinks.indexOf('>')),
             lodash.concat(flights, response.data.flights)
             )
-              .then(function(data) {                
+              .then(function(data) {
+                alert('getting deep');                
                 deferred.resolve(lodash.concat(flights, response.data.flights));                
               });
         } else {
           //we're at the last of the pages
+          alert('deferring - last page');
           deferred.resolve(lodash.concat(flights, response.data.flights));
 
         }
       } else {
+        alert('deferring - no next link');
         deferred.resolve(lodash.concat(flights, response.data.flights));        
       }
       });
@@ -393,18 +397,18 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
         });
 
       // add in destinations that match the iata code
-      if ($scope.travelInfo.yourLocation.length == 3) {
-        $scope.travelInfo.yourFilteredLocations = $scope.travelInfo.yourFilteredLocations.concat(
-          lodash.filter(
-            $scope.travelInfo.destinations,
-            function(destination) {
-              if(destination.iata.indexOf($scope.travelInfo.yourLocation) > -1)
-                return true;
-              else 
-                return false;
-            })
-          );        
-      }
+      // if ($scope.travelInfo.yourLocation.length == 3) {
+      //   $scope.travelInfo.yourFilteredLocations = $scope.travelInfo.yourFilteredLocations.concat(
+      //     lodash.filter(
+      //       $scope.travelInfo.destinations,
+      //       function(destination) {
+      //         if(destination.iata.indexOf($scope.travelInfo.yourLocation) > -1)
+      //           return true;
+      //         else 
+      //           return false;
+      //       })
+      //     );        
+      // }
     }
   }
 
@@ -426,16 +430,16 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
         );
 
       // add in destinations that match the iata code
-      if ($scope.travelInfo.friendLocation.length == 3) {
-        $scope.travelInfo.friendFilteredLocations += lodash.filter(
-          $scope.travelInfo.destinations,
-          function(destination) {
-            if(destination.iata.indexOf($scope.travelInfo.friendLocation) > -1)
-              return true;
-            else 
-              return false;
-          });        
-      }
+      // if ($scope.travelInfo.friendLocation.length == 3) {
+      //   $scope.travelInfo.friendFilteredLocations += lodash.filter(
+      //     $scope.travelInfo.destinations,
+      //     function(destination) {
+      //       if(destination.iata.indexOf($scope.travelInfo.friendLocation) > -1)
+      //         return true;
+      //       else 
+      //         return false;
+      //     });        
+      // }
     }
   }
 
@@ -457,27 +461,9 @@ angular.module('starter.controllers', ['ngLodash','angular-svg-round-progressbar
 
 })
 
-.controller('ChatsCtrl', function($scope, Chats) {
-  // With the new view caching in Ionic, Controllers are only called
-  // when they are recreated or on app start, instead of every page change.
-  // To listen for when this page is active (for example, to refresh data),
-  // listen for the $ionicView.enter event:
-  //
-  //$scope.$on('$ionicView.enter', function(e) {
-  //});
-
-  $scope.chats = Chats.all();
-  $scope.remove = function(chat) {
-    Chats.remove(chat);
-  };
-})
-
-.controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
-  $scope.chat = Chats.get($stateParams.chatId);
-})
 
 .controller('AccountCtrl', function($scope) {
-  $scope.settings = {
-    enableFriends: true
-  };
+  $scope.user = {};
+
+
 });
